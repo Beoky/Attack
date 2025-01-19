@@ -327,6 +327,18 @@ if __name__ == "__main__":
         elif choice == "7":
             print("[INFO] Programm beendet.")
             sys.exit()
+    
+        elif choice == "7":
+            print("[INFO] Programm beendet.")
+            sys.exit()
+            
+        elif choice == "7":
+            print("[INFO] Programm beendet.")
+            sys.exit()
+            
+        elif choice == "7":
+            print("[INFO] Programm beendet.")
+            sys.exit()
             
         if choice in ["1", "2", "3", "4", "5", "6"]:
             ip = input("Ziel-IP-Adresse: ")
