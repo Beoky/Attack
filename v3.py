@@ -116,17 +116,17 @@ elif choice == "2":
     attack_function = slowloris
     args = (ip, port)  # Standard-Port für Slowloris
     
-            # Threads starten
-            attack_threads = [
-                threading.Thread(target=attack_function, args=args)
-                for _ in range(threads)
-            ]
-            for thread in attack_threads:
-                thread.start()
+# Threads starten
+attack_threads = [
+threading.Thread(target=attack_function, args=args)
+for _ in range(threads)
+]
+for thread in attack_threads:
+thread.start()
 
-            # Dashboard starten
-            dashboard_thread = threading.Thread(target=dashboard)
-            dashboard_thread.start()
+# Dashboard starten
+dashboard_thread = threading.Thread(target=dashboard)
+dashboard_thread.start()
 
-            input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
-            stop_event.set()
+input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
+stop_event.set()
