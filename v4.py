@@ -110,7 +110,7 @@ if choice == "1":  # UDP Flood
     packet_size = max(1, min(65507, int(input("Paketgröße (Bytes, 1-65507): "))))
     packet_rate = max(1, int(input("Maximale Pakete pro Sekunde (min. 1): ")))
 
-    stop_event.clear()
+stop_event.clear()
 
 # Angriffsfunktionen den Optionen zuordnen
 if choice == "1":
