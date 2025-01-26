@@ -116,9 +116,14 @@ stop_event.clear()
 if choice == "1":
     attack_function = udp_flood
     args = (ip, port, packet_size, packet_rate)  # UDP-Flood
+
 elif choice == "2":
     attack_function = slowloris
     args = (ip, port)  # Standard-Port für Slowloris
+
+elif choice == "3":
+            print("[INFO] Programm beendet.")
+            sys.exit()
 
             # Threads starten
     attack_threads = [
