@@ -101,8 +101,7 @@ if __name__ == "__main__":
             sys.exit()
 
         if choice in ["1", "2"]:
-            ip = input("Ziel-IP-Adresse: ")
-            if choice == "1":  # UDP Flood benötigt einen Port
+            ip = int(input("Ziel-IP-Adresse: ")
             port = int(input("Ziel-Port: "))
             duration = int(input("Dauer des Angriffs (Sekunden): "))
             threads = int(input("Anzahl der Threads: "))
