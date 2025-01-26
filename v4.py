@@ -102,7 +102,7 @@ if __name__ == "__main__":
             print("[INFO] Programm beendet.")
             sys.exit()
 
-        if choice == "1":  # UDP Flood
+if choice == "1":  # UDP Flood
     ip = input("Ziel-IP-Adresse: ")
     port = int(input("Ziel-Port: "))
     duration = int(input("Dauer des Angriffs (Sekunden): "))
