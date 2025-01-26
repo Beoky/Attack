@@ -104,7 +104,7 @@ if __name__ == "__main__":
             ip = input("Ziel-IP-Adresse: ")
             port = int(input("Ziel-Port: "))
             duration = int(input("Dauer des Angriffs (Sekunden): "))
-            threads = int(input("Anzahl der Threads: "))
+            threads = int(input("Anzahl der Threads (Empfehlung: 200-1000): "))
             packet_rate = int(input("Maximale Pakete pro Sekunde (z. B. 50000): "))
             stop_event.clear()
 
