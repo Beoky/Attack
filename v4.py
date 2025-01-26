@@ -103,10 +103,10 @@ if __name__ == "__main__":
             sys.exit()
 
         if choice == "1":  # UDP Flood
-    ip = input("Ziel-IP-Adresse: ")
-    port = int(input("Ziel-Port: "))
-    duration = int(input("Dauer des Angriffs (Sekunden): "))
-    threads = int(input("Anzahl der Threads (Empfehlung: 200-1000): "))
+                ip = input("Ziel-IP-Adresse: ")
+            port = int(input("Ziel-Port: "))
+            duration = int(input("Dauer des Angriffs (Sekunden): "))
+            threads = int(input("Anzahl der Threads: "))
     packet_size = max(1, min(65507, int(input("Paketgröße (Bytes, 1-65507): "))))
     packet_rate = max(1, int(input("Maximale Pakete pro Sekunde (min. 1): ")))
     
