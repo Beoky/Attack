@@ -121,7 +121,7 @@ elif choice == "2":
     attack_function = slowloris
     args = (ip, port)  # Standard-Port für Slowloris
 
-elif choice == "3":
+if choice == "3":
             print("[INFO] Programm beendet.")
             sys.exit()
 
