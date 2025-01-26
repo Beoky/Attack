@@ -120,9 +120,9 @@ elif choice == "2":
 attack_threads = [
 threading.Thread(target=attack_function, args=args)
 for _ in range(threads)
-]
-for thread in attack_threads:
-thread.start()
+                 ]
+                for thread in attack_threads:
+                    thread.start()
 
 # Dashboard starten
 dashboard_thread = threading.Thread(target=dashboard)
