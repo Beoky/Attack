@@ -120,7 +120,6 @@ if __name__ == "__main__":
             attack_threads = [
                 threading.Thread(target=attack_function, args=args)
                 for _ in range(threads)
-                   threads = int(input("Anzahl der Threads (Empfehlung: 200-1000): "))
             ]
             for thread in attack_threads:
                 thread.start()
