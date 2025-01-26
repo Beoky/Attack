@@ -112,13 +112,13 @@ if choice == "1":  # UDP Flood
 
     stop_event.clear()
 
-            # Angriffsfunktionen den Optionen zuordnen
-            if choice == "1":
-                attack_function = udp_flood
-                args = (ip, port, packet_size, packet_rate)  # UDP-Flood
-            elif choice == "2":
-                attack_function = slowloris
-                args = (ip, port)  # Standard-Port für Slowloris
+# Angriffsfunktionen den Optionen zuordnen
+if choice == "1":
+    attack_function = udp_flood
+    args = (ip, port, packet_size, packet_rate)  # UDP-Flood
+elif choice == "2":
+    attack_function = slowloris
+    args = (ip, port)  # Standard-Port für Slowloris
 
             # Threads starten
     attack_threads = [
