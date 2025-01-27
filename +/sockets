@@ -1,0 +1,196 @@
+ 
+---
+
+1. Socket-Typen und Optionen
+
+Socket-Typen (SOCK_ Optionen)
+
+1. socket.SOCK_STREAM
+
+Verwendet für: TCP-Verbindungen (verbindungsorientiert).
+
+Anwendungen: Übertragung von zuverlässigen Datenströmen (z. B. HTTP, FTP, SSH).
+
+Beispiel: Client-Server-Architekturen.
+
+
+
+2. socket.SOCK_DGRAM
+
+Verwendet für: UDP-Verbindungen (verbindungslos).
+
+Anwendungen: Schnelle, nicht zuverlässige Übertragungen (z. B. DNS, VoIP).
+
+Perfekt für Stresstests, da viele Pakete ohne Verbindungsaufbau gesendet werden können.
+
+
+
+3. socket.SOCK_RAW
+
+Verwendet für: Rohdaten-Sockets (benötigt Admin-/Root-Rechte).
+
+Anwendungen: Niedrigstufige Tests wie Paketmanipulation, Netzwerk-Diagnose, eigene Protokolle.
+
+Ideal für fortgeschrittene Tests und Simulationen.
+
+
+
+4. socket.SOCK_RDM
+
+Verwendet für: Reliable Datagram (selten verwendet).
+
+Anwendungen: Spezialisierte Szenarien, die zuverlässige Datengramme erfordern.
+
+Selten benötigt.
+
+
+
+5. socket.SOCK_SEQPACKET
+
+Verwendet für: Sequenzielle, zuverlässige Datengramme.
+
+Anwendungen: Szenarien, in denen Datengramme in Reihenfolge ankommen müssen.
+
+
+
+
+
+---
+
+Socket-Familien (AF_ Optionen)
+
+1. socket.AF_INET
+
+Verwendet für: IPv4-Adressen (Standard).
+
+
+
+2. socket.AF_INET6
+
+Verwendet für: IPv6-Adressen.
+
+Vorteil: Unterstützt moderne Netzwerke und größere Adressräume.
+
+
+
+3. socket.AF_UNIX
+
+Verwendet für: Interprozesskommunikation auf demselben Host.
+
+Nicht für Netzwerkstresstests geeignet.
+
+
+
+4. socket.AF_PACKET
+
+Verwendet für: Direkter Zugriff auf Netzwerkebene (nur auf Linux).
+
+Anwendungen: Sniffing, Testen von Netzwerkprotokollen.
+
+
+
+
+
+---
+
+2. Zusätzliche Konfigurationen für Netzwerkstests
+
+1. Socket-Optionen (SO_-Flags):
+
+socket.SO_REUSEADDR
+
+Ermöglicht die Wiederverwendung von Ports.
+
+Nützlich, wenn mehrere Tests denselben Port verwenden sollen.
+
+
+socket.SO_BROADCAST
+
+Erforderlich, um UDP-Broadcast-Nachrichten zu senden.
+
+Anwendung: Tests in lokalen Netzwerken.
+
+
+socket.SO_KEEPALIVE
+
+Hält Verbindungen durch regelmäßige Pakete aktiv.
+
+Praktisch für Langzeit-Tests von Verbindungen.
+
+
+socket.SO_LINGER
+
+Steuert, wie ein Socket sich nach dem Schließen verhält (z. B. Wartezeit).
+
+Kann für Stress-/Timeout-Tests wichtig sein.
+
+
+socket.SO_SNDBUF und socket.SO_RCVBUF
+
+Konfiguriert die Größe von Sende- und Empfangspuffern.
+
+Relevant für das Testen von Durchsatz.
+
+
+socket.SO_RCVTIMEO und socket.SO_SNDTIMEO
+
+Timeout für Sende- und Empfangsoperationen.
+
+Wichtig für Tests mit Verbindungsverzögerungen.
+
+
+
+
+2. IP-Optionen (IPv4/IPv6):
+
+socket.IP_TOS
+
+Quality of Service (QoS) für IPv4-Pakete.
+
+Relevant für Priorisierungstests.
+
+
+socket.IP_MULTICAST_TTL und socket.IP_MULTICAST_LOOP
+
+Kontrolle von Multicast-Übertragungen.
+
+
+
+
+
+
+---
+
+3. Typische Anwendungsfälle
+
+1. Netzwerkstresstests
+
+Verwende SOCK_DGRAM für schnelle, wiederholte UDP-Paketsendungen.
+
+Kombiniere dies mit SO_BROADCAST für Tests im lokalen Netzwerk.
+
+
+
+2. Durchsatztests
+
+SOCK_STREAM mit großen Puffergrößen (SO_SNDBUF/SO_RCVBUF).
+
+SO_KEEPALIVE für langfristige Tests.
+
+
+
+3. Paket-Sniffing oder Manipulation
+
+SOCK_RAW und AF_PACKET (Root-Rechte erforderlich).
+
+
+
+4. Verbindungs-Limits
+
+Nutze SO_REUSEADDR und öffne viele Verbindungen parallel.
+
+
+
+
+!
+
